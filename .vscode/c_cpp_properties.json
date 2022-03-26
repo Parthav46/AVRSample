@@ -4,7 +4,7 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
+                "${workspaceFolder}/src/**",
                 "/usr/lib/avr/include/**"
             ],
             "defines": [

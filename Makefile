@@ -36,19 +36,29 @@ ifeq ($(CC), gcc)
 else
 	EXT = cpp
 endif
-SOURCE = $(foreach var, $(FILES), $(var).$(EXT) )
-COMPILED_SOURCE = $(foreach var, $(FILES), $(var).o )
-LINKED_FILE = $(PROJ).bin
-OUTPUT_HEX = $(PROJ).hex
+SOURCE = $(foreach var, $(FILES), src/$(var).$(EXT) )
+COMPILED_SOURCE = $(foreach var, $(FILES), obj/$(var).o )
+LINKED_FILE = obj/$(PROJ).bin
+OUTPUT_HEX = obj/$(PROJ).hex
 AVRDUDE = avrdude -p $(PMCU) -c $(PROG)
 
 # Defined functions
-all:
+help:
+	@echo "use make <options>"
+	@echo "options:"
+	@echo "-----------------------------------------"
+	@echo "build	:compiles and links the code"
+	@echo "clean	:removes all generated files"
+	@echo "flash	:flashes the code"
+	@echo "help	:displays this help"
+	@echo "-----------------------------------------"
 
-%.o: %.c
+obj/%.o: src/%.c
+	@-mkdir obj
 	@echo Compiling $< ...
 	@avr-$(CC) -mmcu=$(MCU) -c $< -o $@ -Wall
 	@echo done compiling $<
+	@echo --------------------------------------------------
 	
 $(LINKED_FILE): $(COMPILED_SOURCE)
 	@echo Linking to $@ ...
@@ -59,10 +69,13 @@ $(OUTPUT_HEX): $(LINKED_FILE)
 	@echo Making $@ ...
 	@avr-objcopy -j .text -j .data -O ihex $(LINKED_FILE) $(OUTPUT_HEX)
 	@echo done
+	@echo --------------------------------------------------
 	@avr-size --format=avr --mcu=$(MCU) $(LINKED_FILE)
 
-flash: $(PROJ).hex
-	$(AVRDUDE) -h flash:w:$(PROJ).hex
+build: $(OUTPUT_HEX)
+
+flash: $(OUTPUT_HEX)
+	$(AVRDUDE) -U flash:w:$(OUTPUT_HEX)
 
 clean:
-	@rm $(COMPILED_SOURCE) $(LINKED_FILE) $(OUTPUT_HEX)
+	@rm -r obj

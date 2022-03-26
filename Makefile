@@ -53,7 +53,7 @@ help:
 	@echo "help	:displays this help"
 	@echo "-----------------------------------------"
 
-obj/%.o: src/%.c
+obj/%.o: src/%.$(EXT)
 	@-mkdir obj
 	@echo Compiling $< ...
 	@avr-$(CC) -mmcu=$(MCU) -c $< -o $@ -Wall

@@ -1,0 +1,9 @@
+{
+    "code-runner.executorMap": {
+        "c": "cd $dir && avr-gcc -mmcu=atmega32 -c $fileName && avr-gcc -mmcu=atmega32 -c blink.c && avr-gcc -mmcu=atmega32 -o $fileNameWithoutExt.elf $fileNameWithoutExt.o blink.o && avr-objcopy -j .text -j .data -O ihex $fileNameWithoutExt.elf $fileNameWithoutExt.hex && avr-size --format=avr --mcu=atmega32 $fileNameWithoutExt.elf",
+        "cpp": "cd $dir && avr-g++ -mmcu=atmega32 -c $fileName && avr-g++ -mmcu=atmega32 -c blink.cpp && avr-g++ -mmcu=atmega32 -o $fileNameWithoutExt.elf $fileNameWithoutExt.o blink.o && avr-objcopy -j .text -j .data -O ihex $fileNameWithoutExt.elf $fileNameWithoutExt.hex && avr-size --format=avr --mcu=atmega32 $fileNameWithoutExt.elf",
+    },
+    "code-runner.executorMapByGlob": {
+        "*.hex": "cd $dir && avrdude -c usbasp -p m32 -U flash:w:$fileName"
+    }
+}
